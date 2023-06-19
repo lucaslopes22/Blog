@@ -1,6 +1,7 @@
 ﻿using Blog.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace Blog.Services {
@@ -9,6 +10,11 @@ namespace Blog.Services {
             var tokenHandler = new JwtSecurityTokenHandler(); // Crição de instância do token
             var key = Encoding.ASCII.GetBytes(Configuration.JwtKey); // Codificando a chave em Bytes
             var tokenDescriptor = new SecurityTokenDescriptor() { // Especificação do token
+                Subject = new ClaimsIdentity(new Claim[] {
+                    new (ClaimTypes.Name, "lucaslopes"), // User.Identity.Name
+                    new (ClaimTypes.Role, "user"), // User.IsInRole
+                    new (ClaimTypes.Role, "admin") // User.IsInRole
+                }),
                 Expires = DateTime.UtcNow.AddHours(1), // Duração de 2 a 8 horas é indicado
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
