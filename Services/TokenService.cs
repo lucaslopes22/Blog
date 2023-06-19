@@ -11,9 +11,8 @@ namespace Blog.Services {
             var key = Encoding.ASCII.GetBytes(Configuration.JwtKey); // Codificando a chave em Bytes
             var tokenDescriptor = new SecurityTokenDescriptor() { // Especificação do token
                 Subject = new ClaimsIdentity(new Claim[] {
-                    new (ClaimTypes.Name, "lucaslopes"), // User.Identity.Name
-                    new (ClaimTypes.Role, "user"), // User.IsInRole
-                    new (ClaimTypes.Role, "admin") // User.IsInRole
+                    new (ClaimTypes.Name, user.Name), // User.Identity.Name
+                    new (ClaimTypes.Role, user.Roles), // User.IsInRole
                 }),
                 Expires = DateTime.UtcNow.AddHours(1), // Duração de 2 a 8 horas é indicado
                 SigningCredentials = new SigningCredentials(
