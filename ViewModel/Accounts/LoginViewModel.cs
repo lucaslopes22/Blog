@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Blog.ViewModel {
-    public class LoginViewModel {
+namespace Blog.ViewModel.Accounts
+{
+    public class LoginViewModel
+    {
         [Required(ErrorMessage = "E-Mail é obrigatório")]
         [EmailAddress(ErrorMessage = "E-Mail é inválido")]
         public string Email { get; set; }

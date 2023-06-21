@@ -1,9 +1,8 @@
 ﻿using Blog.Data;
 using Blog.Extensions;
 using Blog.Models;
-using Blog.ViewModel;
+using Blog.ViewModel.Categories;
 using Blog.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
