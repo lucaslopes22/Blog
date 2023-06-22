@@ -3,8 +3,11 @@ using Blog.Data;
 using Blog.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
+using System.IO.Compression;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureAuthentication(builder);
@@ -17,6 +20,7 @@ LoadConfiguration(app);
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseResponseCompression();
 app.UseStaticFiles();
 app.MapControllers();
 app.Run();
@@ -45,11 +49,24 @@ void ConfigureAuthentication(WebApplicationBuilder builder) {
     });
 }
 void ConfigureMvc(WebApplicationBuilder builder) {
+    builder.Services.AddMemoryCache();
+    builder.Services.AddResponseCompression(options => {
+        options.Providers.Add<GzipCompressionProvider>();
+    });
+    builder.Services.Configure<GzipCompressionProviderOptions>(options => {
+        options.Level = CompressionLevel.Optimal;
+    });
+
     builder
     .Services
     .AddControllers()
     .ConfigureApiBehaviorOptions(options => {
         options.SuppressModelStateInvalidFilter = true;
+    })
+    // Retira padrão serialização padrão
+    .AddJsonOptions(x => {
+        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; // Ignora ciclos subsequentes
+        x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault; // Quando conter valor padrão (nulo), não irá renderizar o objeto na tela
     });
 }
 void ConfigureServices(WebApplicationBuilder builder) {
